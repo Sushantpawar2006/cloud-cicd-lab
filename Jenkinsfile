@@ -14,19 +14,19 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/Sushantpawar2006/cloud-cicd-lab.git'
+                checkout scm
             }
         }
 
         stage('Build') {
             steps {
-                sh 'echo Building application'
+                sh 'python3 -m pip install --user -r requirements.txt'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'python3 --version'
+                sh 'python3 -m py_compile app.py'
             }
         }
 
@@ -55,6 +55,15 @@ pipeline {
             steps {
                 sh 'docker push ${ECR_IMAGE}'
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
